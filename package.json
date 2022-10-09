@@ -1,0 +1,26 @@
+{
+  "name": "tc2007bserver",
+  "version": "1.0.0",
+  "description": "Parte del sistema que se conecta con la base de datos usando el modulo sequelize en javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ongorio/TC2007Bserver.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ongorio/TC2007Bserver/issues"
+  },
+  "homepage": "https://github.com/ongorio/TC2007Bserver#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "sequelize": "^6.24.0",
+    "sqlite3": "^5.1.2"
+  }
+}
