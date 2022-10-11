@@ -9,7 +9,8 @@ Para lanzar el servidor de desarrollo sigue los siguientes pasos:
 * npm start
 
 
+---
 ### Version
-Authors: Marcelo e Isaias
-Version: 1.0.0 Waddles
-Last Updated: 10/10/2020
+Authors: Marcelo e Isaias  
+Version: 1.0.0 Waddles  
+Last Updated: 10/10/2020  
