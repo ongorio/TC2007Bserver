@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       
       models.Campus.hasMany(models.Alumno);
       models.Alumno.belongsTo(models.Campus)
-
     }
   }
   Alumno.init({

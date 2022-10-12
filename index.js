@@ -1,13 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const db = require('./models/index');
-const User = db.User;
-const Alumno = db.Alumno;
+const { User, Alumno } = require('./models/index');
+// const User = db.User;
+// const Alumno = db.Alumno;
 const app = express();
 
 // DB Start
-require('./startup/db')();
+// require('./startup/db')();
 
 
 // Middleware

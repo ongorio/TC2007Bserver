@@ -19,9 +19,11 @@
   },
   "homepage": "https://github.com/ongorio/TC2007Bserver#readme",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "joi": "^17.6.3",
     "morgan": "^1.10.0",
     "sequelize": "^6.24.0",
     "sqlite3": "^5.1.2"
