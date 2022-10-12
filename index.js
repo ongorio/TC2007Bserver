@@ -1,7 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const db = require('./models/index');
+const User = db.User;
+const Alumno = db.Alumno;
 const app = express();
 
 // DB Start
@@ -14,7 +16,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
 
-app.get('/', (req, res)=>{
+app.get('/', async(req, res)=>{
+
+    const users = await User.findAll();
+    console.log(users)
+    const alumnos = await Alumno.findAll();
+    console.log(alumnos)
+
     res.send('Prepanet :)')
 });
 

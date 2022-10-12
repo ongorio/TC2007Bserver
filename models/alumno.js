@@ -1,23 +1,36 @@
-const { Model, DataTypes } = require('sequelize');
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Alumno extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      models.User.hasOne(models.Alumno);
+      models.Alumno.belongsTo(models.User);
+      
+      models.Campus.hasMany(models.Alumno);
+      models.Alumno.belongsTo(models.Campus)
 
-class Alumno extends Model {}
-
-
-
-module.exports.init = sequelize =>{
-    Alumno.init({
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },
-        matricula: DataTypes.STRING,
-        birthdate: DataTypes.DATEONLY
-        // FK with user one to one
-        // FK with Campus one(campus) to many(alumnos)
-
-    },{
-        sequelize
-    })
+    }
+  }
+  Alumno.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+  },
+    matricula: DataTypes.STRING,
+    birthdate: DataTypes.DATEONLY
+    // FK with user one to one
+    // FK with Campus one(campus) to many(alumnos)
+  }, {
+    sequelize,
+    modelName: 'Alumno',
+  });
+  return Alumno;
 };
-module.exports.Alumno = Alumno;
