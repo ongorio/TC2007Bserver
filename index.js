@@ -1,20 +1,27 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const config = require('config');
 const { User, Alumno } = require('./models/index');
-// const User = db.User;
-// const Alumno = db.Alumno;
+
+const users = require('./routes/users');
 const app = express();
 
 // DB Start
 // require('./startup/db')();
 
 
+if (!config.get('SECRET_KEY')){
+    console.log('No Secret Key defined!');
+    process.exit(1);
+}
+
 // Middleware
 app.use(cors()) // Allowed cors Without restriction
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
+app.use('/', users);
 
 app.get('/', async(req, res)=>{
 

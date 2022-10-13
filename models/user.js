@@ -2,6 +2,9 @@
 const {
   Model
 } = require('sequelize');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -12,6 +15,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
+    async validate_password(password){
+      const result = await bcrypt.compare(password, this.getDataValue("password"));
+      return result;
+    }
+
+    generateToken(){
+      const token = jwt.sign({_id: this.getDataValue('id')}, config.get('SECRET_KEY'));
+      return token;
+    }
   }
   User.init({
     id: {
@@ -20,7 +33,15 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     email: DataTypes.STRING,
-    password: DataTypes.TEXT,
+    password: {
+      type: DataTypes.TEXT,
+      set(value){
+        const salt = bcrypt.genSaltSync();
+        const hash = bcrypt.hashSync(value, salt);
+
+        this.setDataValue("password", hash);
+      }
+    },
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
     
