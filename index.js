@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const config = require('config');
-const { User, Alumno, Coordinador, Campus } = require('./models/index');
+const { User, Alumno, Coordinador, Campus, Grupo, Taller } = require('./models/index');
 
 const users = require('./routes/users');
 const app = express();
@@ -31,15 +31,14 @@ app.get('/', async(req, res)=>{
     console.log(alumnos)
     const campuses = await Campus.findAll();
     console.log(campuses);
+    const talleres = await Taller.findAll();
+    console.log(talleres);
+    const grupos = await Grupo.findAll();
+    console.log(grupos);
+    const coordinadores = await Coordinador.findAll();
+    console.log(coordinadores);
 
-    try{
-        const coordinadores = await Coordinador.findAll();
-        console.log(coordinadores);
-
-    }catch(e){
-        console.log(e)
-    }
-
+ 
     res.send('Prepanet :)')
 });
 
