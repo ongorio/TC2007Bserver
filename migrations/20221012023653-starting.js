@@ -111,6 +111,29 @@ module.exports = {
       
     });
 
+    queryInterface.createTable('Coordinadores', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+      },
+      campusId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Campuses',
+          key: 'id'
+        },
+      }
+    });
+
     await transaction.commit();
   } catch(e){
     await transaction.rollback();
@@ -126,6 +149,7 @@ module.exports = {
       await queryInterface.dropTable('Users')
       await queryInterface.dropTable('Campuses')
       await queryInterface.dropTable('Alumnos')
+      await queryInterface.dropTable('Coordinadores')
       await transaction.commit();
     }catch(e){
       await transaction.rollback();
