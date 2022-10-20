@@ -31,8 +31,14 @@ app.get('/', async(req, res)=>{
     console.log(alumnos)
     const campuses = await Campus.findAll();
     console.log(campuses);
-    const coordinadores = await Coordinador.findAll();
-    console.log(coordinadores);
+
+    try{
+        const coordinadores = await Coordinador.findAll();
+        console.log(coordinadores);
+
+    }catch(e){
+        console.log(e)
+    }
 
     res.send('Prepanet :)')
 });
