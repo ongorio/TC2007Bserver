@@ -111,7 +111,7 @@ module.exports = {
       
     });
 
-    queryInterface.createTable('Coordinadores', {
+    queryInterface.createTable('Coordinadors', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -157,7 +157,7 @@ module.exports = {
       await queryInterface.dropTable('Users')
       await queryInterface.dropTable('Campuses')
       await queryInterface.dropTable('Alumnos')
-      await queryInterface.dropTable('Coordinadores')
+      await queryInterface.dropTable('Coordinadors')
       await transaction.commit();
     }catch(e){
       await transaction.rollback();

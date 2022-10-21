@@ -23,8 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         sequelize,
-        modelName: 'Coordinador',
-        tableName: 'Coordinadors'
+        modelName: 'Coordinador'
     });
     return Coordinador;
 };
