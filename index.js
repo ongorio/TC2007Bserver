@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const config = require('config');
-const { User, Alumno, Coordinador, Campus, Grupo, Taller } = require('./models/index');
+const { User, Alumno, Coordinador, Campus, Taller } = require('./models/index');
 
 const users = require('./routes/users');
 const app = express();
