@@ -33,8 +33,6 @@ app.get('/', async(req, res)=>{
     console.log(campuses);
     const talleres = await Taller.findAll();
     console.log(talleres);
-    const grupos = await Grupo.findAll();
-    console.log(grupos);
     const coordinadores = await Coordinador.findAll();
     console.log(coordinadores);
 
