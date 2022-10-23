@@ -1,5 +1,6 @@
 'use strict';
 const bcrypt = require('bcrypt');
+const { faker } = require('@faker-js/faker');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -18,19 +19,27 @@ module.exports = {
     const defaultPass = await bcrypt.hash('1234', salt);
     const transaction =  await sequelize.transaction();
 
-
-    try{
-      await queryInterface.bulkInsert('Users', [{
-        email: "A00694200@tec.mx",
+    let alumnos = [];
+    for (let i = 0; i < 5; i++){
+      let fname = faker.name.firstName();
+      let lname = faker.name.lastName();
+      let temp = {
+        email: faker.internet.email(fname, lname, 'tec.mx'),
         password: defaultPass,
-        first_name: "Pedro",
-        last_name: "Sanchez",
-        isAdmin: false,
-        isCoord: false,
+        first_name: fname,
+        last_name: lname,
         isAlumno: true,
         createdAt: new Date(),
         updatedAt: new Date()
-      },{
+      }
+      alumnos.push(temp);
+    }
+
+
+    try{
+      await queryInterface.bulkInsert('Users', [
+        ...alumnos,
+      {
         email: "A00981243@tec.mx",
         password: defaultPass,
         first_name: "Maria",
