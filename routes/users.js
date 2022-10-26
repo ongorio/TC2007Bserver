@@ -1,53 +1,34 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const config = require('config');
 const { User } = require('../models/index');
+const Joi = require('joi');
+const auth = require('../middleware/Auth');
+const { hasPerm } = require('../middleware/Auth');
 
-router.get('/users/', async(req, res)=>{
-    const users = await User.findAll();
-
-    res.send(users);
+const loginSchema = Joi.object({
+    email: Joi.string().required(),
+    password: Joi.string().required()
 });
 
-router.post('/users/', async(req, res)=>{
-    let user = await User.build({
-        email: req.body.email,
-        password: req.body.password,
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        isAlumno: req.body.isAlumno,
-    });
+// Get token view
+router.post('/generate-token/', async(req, res)=>{
 
-    user = await user.save()
-    res.send(user);
-});
+    const { error } = loginSchema.validate(req.body);
+    if(error) return res.status(400).send('Wrong email or password!')
 
-router.post('/login/', async(req, res)=>{
-    const user = await User.findOne({where: {email: req.body.email}});
+    const user = await User.findOne({ where: {email : req.body.email }});
+    if (!user) return res.status(400).send('Wrong email or password!');
 
-    if (!user) return res.status(400).send("Email not found!");
-
-    const valid = await user.validate_password(req.body.password);
-
-    if (!valid) return res.status(400).send("Password wrong")
+    const isValid = await user.validate_password(req.body.password);
+    if (!isValid) return res.status(400).send('wrong email or password!');
 
     return res.send(user.generateToken());
 });
 
-router.get('/protected/', async(req, res)=>{
-    const token = req.header('x-auth-token');
-    if (!token) return res.status(401).send('No token included');
 
-    try {
-        const decoded = jwt.verify(token, config.get('SECRET_KEY'));
-        const user = await User.findByPk(decoded._id);
-        return res.send(user)
-    } catch(e){
-        res.status(400).send('Bad Token')
-    }
-    
-});
+router.get('/protected/', [auth, hasPerm('isAlumno')], (req, res)=>{
+    res.send(req.user);
+}); 
 
 
 module.exports = router;

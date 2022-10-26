@@ -28,7 +28,7 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date()
     },{
-      nombre: "Mis emociones ",
+      nombre: "Mis emociones",
       description: "¿Qué son las emociones? Emociones, biología de la salud. Importancia de las emociones. Identificación de emociones. Tipos de emociones. Inteligencia emocional.",
       duracion: 5,
       orden: 3,

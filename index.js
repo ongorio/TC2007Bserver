@@ -2,9 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const config = require('config');
-const { User, Alumno, Coordinador, Campus, Taller } = require('./models/index');
+const { User, Alumno, Coordinador, Campus, Taller, Seccion } = require('./models/index');
 
 const users = require('./routes/users');
+const alumnos = require('./routes/alumnos');
+const dummy = require('./routes/dummy');
 const app = express();
 
 // DB Start
@@ -22,6 +24,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/', users);
+app.use('/', alumnos);
+app.use('/api/', dummy);
 
 app.get('/', async(req, res)=>{
 
@@ -35,6 +39,11 @@ app.get('/', async(req, res)=>{
     console.log(talleres);
     const coordinadores = await Coordinador.findAll();
     console.log(coordinadores);
+    const secciones = await Seccion.findAll();
+    console.log(secciones);
+    
+    const taller = await Taller.findByPk(1);
+    console.log(await taller.getSeccions());
 
  
     res.send('Prepanet :)')

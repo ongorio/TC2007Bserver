@@ -1,3 +1,5 @@
 node_modules
 test.sqlite
 prepanet.sqlite
+.gcloudignore
+app.yaml
