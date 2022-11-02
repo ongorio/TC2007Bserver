@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const config = require('config');
-const { User, Alumno, Coordinador, Campus, Taller, Seccion } = require('./models/index');
+const { User, Alumno, Coordinador, Campus, Taller, Seccion, Inscripcion } = require('./models/index');
 
 const users = require('./routes/users');
 const alumnos = require('./routes/alumnos');
@@ -41,12 +41,14 @@ app.get('/', async(req, res)=>{
     console.log(coordinadores);
     const secciones = await Seccion.findAll();
     console.log(secciones);
+   const inscripciones = await Inscripcion.findAll();
+   console.log(inscripciones);
     
     const taller = await Taller.findByPk(1);
     console.log(await taller.getSeccions());
 
  
-    res.send('Prepanet :)')
+    res.send('Prepanet :)<!DOCTYPE html><html><body><h1>Proximamente</h1></body></html>')
 });
 
 

@@ -26,6 +26,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Seccion.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     secNum: DataTypes.INTEGER,
     isOpen: DataTypes.BOOLEAN,
   }, {
