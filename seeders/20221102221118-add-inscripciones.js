@@ -5,6 +5,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const sequelize = queryInterface.sequelize;
     const transaction = await sequelize.transaction();
+    const estatusLista = ['Aprobada','Reprobada','Dada de baja'];
 
     const alumno = await sequelize.query('SELECT id FROM Users WHERE isAlumno=true;', {type: sequelize.QueryTypes.SELECT});
     const periodo = await sequelize.query('SELECT id FROM Periodos;', {type: sequelize.QueryTypes.SELECT});
@@ -12,7 +13,7 @@ module.exports = {
     try{
       await queryInterface.bulkInsert('Inscripcions', [
         {
-          estatus: 'Aprobada',
+          estatus: estatusLista[Math.floor(Math.random()*estatusLista.length)],
           aprobado: true,
           alumnoId: alumno[Math.floor(Math.random()*alumno.length)].id,
           periodoId: periodo[Math.floor(Math.random()*periodo.length)].id,
@@ -21,7 +22,7 @@ module.exports = {
           updatedAt: new Date()
         },
         {
-          estatus: 'Reprobada',
+          estatus: estatusLista[Math.floor(Math.random()*estatusLista.length)],
           aprobado: false,
           alumnoId: alumno[Math.floor(Math.random()*alumno.length)].id,
           periodoId: periodo[Math.floor(Math.random()*periodo.length)].id,
@@ -30,7 +31,7 @@ module.exports = {
           updatedAt: new Date()
         },
         {
-          estatus: 'Reprobada',
+          estatus: estatusLista[Math.floor(Math.random()*estatusLista.length)],
           aprobado: false,
           alumnoId: alumno[Math.floor(Math.random()*alumno.length)].id,
           periodoId: periodo[Math.floor(Math.random()*periodo.length)].id,
