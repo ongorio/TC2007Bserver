@@ -48,7 +48,7 @@ app.get('/', async(req, res)=>{
     console.log(await taller.getSeccions());
 
  
-    res.send('Prepanet :)<!DOCTYPE html><html><body><h1>Proximamente</h1></body></html>')
+    res.send('Prepanet :)<!DOCTYPE html><html><body><br><h1 style="color:blue;">Proximamente...</h1></body></html>')
 });
 
 
