@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const config = require('config');
-const { User, Alumno, Coordinador, Campus, Taller, Seccion, Inscripcion } = require('./models/index');
+const { User, Alumno, Coordinador, Campus, Taller, Seccion, Inscripcion, Periodo } = require('./models/index');
 
 const users = require('./routes/users');
 const alumnos = require('./routes/alumnos');
@@ -43,6 +43,8 @@ app.get('/', async(req, res)=>{
     console.log(secciones);
    const inscripciones = await Inscripcion.findAll();
    console.log(inscripciones);
+   const periodos = await Periodo.findAll();
+   console.log(periodos);
     
     const taller = await Taller.findByPk(1);
     console.log(await taller.getSeccions());
