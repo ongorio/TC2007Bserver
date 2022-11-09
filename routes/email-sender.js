@@ -3,9 +3,7 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 const CodeGenerator = require('node-code-generator');
 
-router.post("/code-section/", (req, res) => {
-
-    
+router.post("/code-section/", (req, res) => {    
     try{
         let generator = new CodeGenerator();
         let code = generator.generateCodes('######', 1, {});
@@ -18,12 +16,12 @@ router.post("/code-section/", (req, res) => {
             },
             auth:{
                 user: 'prepanet-oficial@hotmail.com',
-                pass:'0oprt&%Fg$',
+                pass:'------',
             }
         });
         const mailOptions = {
             from: "prepanet-oficial@hotmail.com",
-            to: "A00831137@tec.mx",
+            to: "A00831137@tec.mx",     // Aqui se ingresa solo el email del usuario que se selecciono
             subject: "Clave de acceso a la plataforma de prepanet de doble autenticación",
             html: `<b>Su codigo de verificacion es ${code[0]}</b>`,
         };
@@ -31,7 +29,6 @@ router.post("/code-section/", (req, res) => {
         transporter.sendMail(mailOptions);
     }catch(err){
         console.log(err);
-        
     }
 });
 
