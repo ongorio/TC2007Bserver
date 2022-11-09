@@ -1,40 +1,37 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
+const CodeGenerator = require('node-code-generator');
 
 router.post("/code-section/", (req, res) => {
-    // falta la info del correo administrativo que mandara los correos
-    const CLIENT_ID='';
-    const CLIENT_SECRET='';
-    const REDIRECT_URI='';
-    const REFRESH_TOKEN='';
 
-    const authentication = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-    authentication.setCredentials({refresh_token:REFRESH_TOKEN});
+    
     try{
-        const accessToken = authentication.getAccessToken();
+        let generator = new CodeGenerator();
+        let code = generator.generateCodes('######', 1, {});
+
         const transporter = nodemailer.createTransport({
-            service: "gmail",
+            host: 'smtp-mail.outlook.com',
+            port: 587,
+            tls:{
+                ciphers:'SSLv3',
+            },
             auth:{
-                type:"OAuth2",
-                user:"", // el contestador automatico
-                clientId: CLIENT_ID,
-                clientSecret: CLIENT_SECRET,
-                refreshToken: REFRESH_TOKEN,
-                accessToken: accessToken,
+                user: 'prepanet-oficial@hotmail.com',
+                pass:'0oprt&%Fg$',
             }
         });
         const mailOptions = {
-            from: "Generadora de claves automática<correoAdmin@tec.mx>",
-            to: "guillenmarcelo67@gmail.com",
-            subject: "Aqui esta su clave de acceso",
-            html: "",   // falta generar un codigo que sea temporal y que el acceso tambien conozca
+            from: "prepanet-oficial@hotmail.com",
+            to: "A00831137@tec.mx",
+            subject: "Clave de acceso a la plataforma de prepanet de doble autenticación",
+            html: `<b>Su codigo de verificacion es ${code[0]}</b>`,
         };
         
         transporter.sendMail(mailOptions);
     }catch(err){
         console.log(err);
+        
     }
 });
 
