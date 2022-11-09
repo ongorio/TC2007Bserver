@@ -39,7 +39,9 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date()
         }
-      ])
+      ], transaction);
+
+      await transaction.commit();
     }
     catch(e){
       console.log("Error", e);
