@@ -27,6 +27,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/', users);
 app.use('/api/', dummy);
+app.use('/api/auth/', users)
 app.use('/api/alumnos/', inscripcionesAlumnos);
 app.use('/api/alumnos/', tallerAlumnos);
 

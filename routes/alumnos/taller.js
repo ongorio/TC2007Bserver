@@ -32,13 +32,17 @@ router.get('/taller/:id/', auth, async(req, res)=>{
     taller2Send.duracion = taller.duracion
     taller2Send.orden = taller.orden
     taller2Send.aprobado = false;
+    taller2Send.estatus = 'Sin Cursar'
     taller2Send.dependencias = null;
 
     if (taller.Seccions){
         for (let seccion of taller.Seccions)
         {
             for (let insc of seccion.Inscripcions){
-                if (insc.aprobado) taller2Send.aprobado = true;
+                if (insc.aprobado) {
+                    taller2Send.aprobado = true;
+                    taller2Send.estatus = insc.estatus;
+                }
             }
         }
     }
@@ -82,9 +86,6 @@ router.get('/taller/:id/', auth, async(req, res)=>{
 
     return res.send(taller2Send);
 });
-
-
-
 
 
 module.exports = router;

@@ -142,14 +142,14 @@ router.post('/inscribir/:id/', auth, async(req, res)=>{
 
 
 // Obtener curso a inscribir
-router.get('/cursos-inscribir/', auth, async(req, res)=>{
+router.get('/curso-inscribir/', auth, async(req, res)=>{
     const alumno = await req.user.getAlumno();
 
     let talleres = await Taller.findAll({
         attributes: ['id', 'nombre', 'orden', 'description', 'duracion']
     });
 
-    console.log('hey')
+    // console.log('hey')
     for (let taller of talleres){
 
         let insc;
@@ -209,7 +209,7 @@ router.get('/cursos-inscribir/', auth, async(req, res)=>{
         }
         
     }
-    return res.status(400).send('No tienes talleres proximos')
+    return res.status(404).send('No tienes talleres proximos')
 });
 
 
@@ -243,6 +243,7 @@ router.get('/historial-cursos/', auth, async(req, res)=>{
         temp.description = taller.description
         temp.duracion = taller.duracion
         temp.approved = false
+        temp.estatus = 'Sin Cursar'
 
 
         if (taller.Seccions){
@@ -252,6 +253,7 @@ router.get('/historial-cursos/', auth, async(req, res)=>{
                         if (insc.aprobado){
                             temp.approved = true;
                         }
+                        temp.estatus = insc.estatus
                     }
                 }
             }
