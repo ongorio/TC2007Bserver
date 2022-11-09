@@ -1,7 +1,8 @@
 {
   "development": {
     "storage":"prepanet.sqlite",
-    "dialect":"sqlite"
+    "dialect":"sqlite",
+    "logging": false
   },
   "test": {
     "username": "root",
@@ -12,6 +13,7 @@
   },
   "production": {
       "storage":"prepanet.sqlite",
-      "dialect":"sqlite"
+      "dialect":"sqlite",
+      "logging": false
   }
 }

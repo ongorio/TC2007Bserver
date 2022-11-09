@@ -22,7 +22,16 @@ router.post('/generate-token/', async(req, res)=>{
     const isValid = await user.validate_password(req.body.password);
     if (!isValid) return res.status(400).send('wrong email or password!');
 
-    return res.send(user.generateToken());
+
+
+    let resOjbect = {'token': user.generateToken()}
+
+    if (user.getDataValue('isAdmin')) resOjbect.userType = 'admin';
+    else if (user.getDataValue('isCoord')) resOjbect.userType = 'coord';
+    else resOjbect.userType = 'alumno'
+
+
+    return res.send(resOjbect);
 });
 
 

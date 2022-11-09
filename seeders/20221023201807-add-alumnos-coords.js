@@ -25,7 +25,7 @@ module.exports = {
       })
       
       const res = await queryInterface.bulkInsert('Alumnos', alumnos, {transaction});
-      console.log(res)
+      // console.log(res)
       let coords = [];
       coordsId.forEach(coord =>{
         coords.push({
