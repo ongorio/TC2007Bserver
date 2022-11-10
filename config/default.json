@@ -1,3 +1,4 @@
 {
-    "SECRET_KEY": "misupersecretkey"
+    "SECRET_KEY": "misupersecretkey",
+    "PASSWORD":"70oprt&%Lds"
 }
