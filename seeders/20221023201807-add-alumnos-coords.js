@@ -1,9 +1,11 @@
 'use strict';
+const CodeGenerator = require('node-code-generator');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
 
+    let generator = new CodeGenerator();
     const sequelize = queryInterface.sequelize
     const transaction = await sequelize.transaction()
     const matriculas = ["A023939", "A0292939", "A0128383", "A0202994844", "A0238282"];
@@ -18,6 +20,8 @@ module.exports = {
           matricula: matriculas[Math.floor(Math.random()*matriculas.length)],
           birthDate: new Date(1985, 6, 3),
           campusId: 1,
+          code: `${generator.generateCodes('######', 1, {})}`,
+          expiration: new Date(),
           userId: alumno.id,
           createdAt: new Date(),
           updatedAt: new Date()

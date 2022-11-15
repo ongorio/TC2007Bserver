@@ -24,7 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true
   },
     matricula: DataTypes.STRING,
-    birthdate: DataTypes.DATEONLY
+    birthdate: DataTypes.DATEONLY,
+    code: DataTypes.STRING,
+    expiration: DataTypes.DATE
     // FK with user one to one
     // FK with Campus one(campus) to many(alumnos)
   }, {
