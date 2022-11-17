@@ -115,6 +115,8 @@ router.post('/inscribir/:id/', auth, async(req, res)=>{
             await seccion.setCampus(alumno.Campus);
         }catch(e){
             console.log(e)
+            res.status(400).send('No se pudo crear la seccion');
+
         }
 
     }
@@ -134,6 +136,7 @@ router.post('/inscribir/:id/', auth, async(req, res)=>{
         return res.send(nuevaInsc);
     }catch(e){
         console.log(e)
+        res.status(400).send(e);
     }
 
     return res.status(400).send('something went wrong');

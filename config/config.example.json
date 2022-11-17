@@ -1,0 +1,37 @@
+{
+    "development": {
+      "storage":"prepanet.sqlite",
+      "dialect":"sqlite",
+      "logging": false
+    },
+    "test": {
+      "username": "",
+      "password": "",
+      "database": "",
+      "host": "",
+      "dialect": ""
+    },
+    "production": {
+      "database": "",
+      "username": "",
+      "password": "",
+      "host": "",
+      "pool": {
+        "max": 5,
+        "min": 0,
+        "acquire": 30000,
+        "idle": 10000
+    },
+      "dialect": "",
+      "dialectOptions":{
+      "socketPath": ""
+      }
+    },
+    "prod": {
+      "database": "",
+      "username": "",
+      "password": "",
+      "host": "",
+      "dialect": ""
+    }
+  }

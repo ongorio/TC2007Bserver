@@ -19,7 +19,7 @@ module.exports = {
       campusId :{
         type: Sequelize.INTEGER,
         references: {
-          model: 'campuses',
+          model: 'Campuses',
           key: 'id'
         }
       },

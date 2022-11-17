@@ -42,7 +42,9 @@ router.get('/taller/:id/', auth, async(req, res)=>{
                 if (insc.aprobado) {
                     taller2Send.aprobado = true;
                     taller2Send.estatus = insc.estatus;
+                    break;
                 }
+                taller2Send.estatus = insc.estatus;
             }
         }
     }

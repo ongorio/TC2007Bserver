@@ -3,3 +3,4 @@ test.sqlite
 prepanet.sqlite
 .gcloudignore
 app.yaml
+config/config.json
