@@ -83,6 +83,12 @@ module.exports = {
       birthdate: {
         type: Sequelize.DATEONLY
       },
+      code: {
+        type: Sequelize.STRING
+      },
+      expiration: {
+        type: Sequelize.DATE
+      },
       userId: {
         type: Sequelize.INTEGER,
         references: {
