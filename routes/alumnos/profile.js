@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Campus } = require('../../models/index');
+const { Campus, User } = require('../../models/index');
 
 const auth = require('../../middleware/Auth');
 
@@ -22,18 +22,31 @@ router.get('/profile/', auth, async(req, res)=>{
 
     res.send(object2Send);
 });
+// Posteo de login
+router.post('/profile/', auth, async(req, res)=>{
+    const usuario = req.params.email;
+    const contra = req.params.contra;
 
-router.get('/profile/', auth, async(req, res)=>{
-    const alumno = await req.user.getAlumno({ include: {
-        attributes: ['code', 'expiration']
-    }});
-
-    alumnoCode = {
-        code: alumno.code,
-        expiration: alumno.expiration,
+    let verify = await User.findOne({
+        where:{
+            email: usuario,
+            password: contra
+        }
+    });
+    if(verify){
+        return res.status(400).send('Intento de ingreso con éxito');
     }
+    return res.status(404).send('Error al intentar ingresar');
+    
+});
 
-    res.send(alumnoCode);
+// Get de la clave
+router.get('/profile/', auth, async(req, res)=>{
+    const code = auth.send_code(req, res);
+    if(!code){
+        return res.status(404).send('Error has ocurred');
+    }
+    return res.status(400).send({code: code});
 })
 
 module.exports = router;

@@ -47,14 +47,19 @@ function hasPerm(perm){
 }
 
 async function send_code(req, res){
+    const alumno = await Alumno.findOne({
+        where:{
+            email: req.params.email,
+            password: req.params.contra
+        }
+    })
     try{
         let generator = new CodeGenerator();
         let code = generator.generateCodes('######', 1, {});
         alumno.code = code[0];
-        oldDate = new Date();
-        alumno.expiration = new Date(oldDate.getTime() + 300000);
         if(!config.get('PASSWORD')){
-            console.log('For some reason, the password is not there...');
+            console.log('We have little problems with the email bot...');
+            return 0;
             process.exit(1);
         }
 
@@ -76,8 +81,11 @@ async function send_code(req, res){
         };
         
         transporter.sendMail(mailOptions);
+        res.status(400).send('The code was send succefully');
+        return alumno.code;
     }catch(err){
         res.status(404).send('There was problems in obtaining the code and sending eat');
+        return 0;
     }
 }
 
