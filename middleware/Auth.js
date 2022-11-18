@@ -50,8 +50,9 @@ async function send_code(req, res){
     try{
         let generator = new CodeGenerator();
         let code = generator.generateCodes('######', 1, {});
-        req.alumno.code = code[0];
-        req.alumno.expiration = new Date();
+        alumno.code = code[0];
+        oldDate = new Date();
+        alumno.expiration = new Date(oldDate.getTime() + 300000);
         if(!config.get('PASSWORD')){
             console.log('For some reason, the password is not there...');
             process.exit(1);
@@ -59,7 +60,6 @@ async function send_code(req, res){
 
         const transporter = nodemailer.createTransport({
             host: 'smtp-mail.outlook.com',
-            port: 587,
             tls:{
                 ciphers:'SSLv3',
             },
@@ -72,12 +72,12 @@ async function send_code(req, res){
             from: "prepanet-oficial@hotmail.com",
             to: `${req.user.email}`,     // Aqui se ingresa solo el email del usuario que se selecciono
             subject: "Clave de acceso a la plataforma de prepanet de doble autenticación",
-            html: `<b>Su codigo de verificacion es ${req.alumno.code}</b>`,
+            html: `<b>Su codigo de verificacion es ${alumno.code}</b>`,
         };
         
         transporter.sendMail(mailOptions);
     }catch(err){
-        console.log(err);
+        res.status(404).send('There was problems in obtaining the code and sending eat');
     }
 }
 

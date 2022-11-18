@@ -15,6 +15,9 @@ module.exports = {
       aprobado: {
         type: Sequelize.BOOLEAN
       },
+      calificacion: {
+        type: Sequelize.INTEGER
+      },
       alumnoId: {
         type: Sequelize.INTEGER,
         references: {

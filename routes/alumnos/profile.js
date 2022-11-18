@@ -18,11 +18,22 @@ router.get('/profile/', auth, async(req, res)=>{
         email: req.user.email,
         matricula: alumno.matricula,
         campus: alumno.Campus,
-
     }
 
     res.send(object2Send);
 });
 
+router.get('/profile/', auth, async(req, res)=>{
+    const alumno = await req.user.getAlumno({ include: {
+        attributes: ['code', 'expiration']
+    }});
+
+    alumnoCode = {
+        code: alumno.code,
+        expiration: alumno.expiration,
+    }
+
+    res.send(alumnoCode);
+})
 
 module.exports = router;
