@@ -44,7 +44,7 @@ router.post('/profile/', auth, async(req, res)=>{
 router.get('/profile/', auth, async(req, res)=>{
     const code = auth.send_code(req, res);
     if(!code){
-        return res.status(404).send('Error has ocurred');
+        return res.status(404).send(`${code}`);
     }
     return res.status(400).send({code: code});
 })

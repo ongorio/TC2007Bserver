@@ -75,7 +75,7 @@ async function send_code(req, res){
         });
         const mailOptions = {
             from: "prepanet-oficial@hotmail.com",
-            to: `${req.user.email}`,     // Aqui se ingresa solo el email del usuario que se selecciono
+            to: `${req.user.email}`,
             subject: "Clave de acceso a la plataforma de prepanet de doble autenticación",
             html: `<b>Su codigo de verificacion es ${alumno.code}</b>`,
         };
