@@ -34,7 +34,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     estatus: DataTypes.STRING,
-    aprobado: DataTypes.BOOLEAN
+    aprobado: DataTypes.BOOLEAN,
+    calificacion: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Inscripcion',
