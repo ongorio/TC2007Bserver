@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const config = require('config');
-const { User, Alumno, Coordinador, Campus, Taller, Seccion, Inscripcion, Periodo } = require('./models/index');
-const { Sequelize } = require('sequelize')
+// const { User, Alumno, Coordinador, Campus, Taller, Seccion, Inscripcion, Periodo } = require('./models/index');
+// const { Sequelize } = require('sequelize')
 
 const users = require('./routes/users');
 const inscripcionesAlumnos = require('./routes/alumnos/inscripciones');
@@ -17,7 +17,7 @@ const dummy = require('./routes/dummy');
 const app = express();
 
 
-console.log(process.env.NODE_ENV);
+// console.log(process.env.NODE_ENV);
 
 if (!config.get('SECRET_KEY')){
     console.log('No Secret Key defined!');
