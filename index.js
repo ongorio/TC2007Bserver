@@ -12,6 +12,7 @@ const profileAlumnos = require('./routes/alumnos/profile');
 
 const alumnosCoords = require('./routes/coordis/alumnos');
 const periodosCoords = require('./routes/coordis/periodos');
+const reportCoords = require('./routes/coordis/report');
 
 const dummy = require('./routes/dummy');
 const app = express();
@@ -37,6 +38,7 @@ app.use('/api/alumnos/', tallerAlumnos);
 app.use('/api/alumnos/', profileAlumnos);
 app.use('/api/coords/', alumnosCoords);
 app.use('/api/coords/', periodosCoords);
+app.use('/api/coords/', reportCoords);
 
 app.get('/', async(req, res)=>{
 

@@ -89,6 +89,6 @@ async function send_code(req, res){
     }
 }
 
-module.exports = send_code;
 module.exports = authenticate;
+module.exports.send_code = send_code;
 module.exports.hasPerm = hasPerm;

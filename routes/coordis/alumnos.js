@@ -87,7 +87,6 @@ router.get('/alumno/:id', async(req, res)=>{
             id: campus.dataValues['id'],
             name: campus.dataValues['name']
         }
-
     }
 
     return res.send(alumnos2Send);
