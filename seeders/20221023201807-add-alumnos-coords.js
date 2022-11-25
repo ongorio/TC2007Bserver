@@ -21,7 +21,6 @@ module.exports = {
           birthDate: new Date(1985, 6, 3),
           campusId: 1,
           code: `${generator.generateCodes('######', 1, {})}`,
-          expiration: new Date(),
           userId: alumno.id,
           createdAt: new Date(),
           updatedAt: new Date()
