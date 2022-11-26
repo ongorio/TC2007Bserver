@@ -1,7 +1,8 @@
 const express = require('express');
-const { Inscripcion, Taller, Seccion, Alumno, Periodo, Campus } = require('../../models/index');
+const { Inscripcion, Taller, Seccion, Alumno, Periodo, Campus, User } = require('../../models/index');
 const nodemailer = require('nodemailer');
 const CodeGenerator = require('node-code-generator');
+const config = require('config');
 const auth = require('../../middleware/Auth');
 const router = express.Router();
 
@@ -273,7 +274,7 @@ router.get('/historial-cursos/', auth, async(req, res)=>{
 });
 
 // Posteo de login
-router.post('/login/', auth, async(req, res)=>{
+router.post('/auth-login/', auth, async(req, res)=>{
     const usuario = req.params.email;
     const contra = req.params.contra;
 
@@ -325,13 +326,24 @@ router.post('/login/', auth, async(req, res)=>{
 });
 
 // Mandar a crear otro código
-router.post('/login/auth/', auth, async(req, res)=>{
-    const alumno = await Alumno.findOne({
+router.post('/auth-again/', async(req, res)=>{
+    const user = await User.findOne({
         where:{
-            email: req.params.email,
-            password: req.params.contra
+            email: req.body.email,
+            password: req.body.password
         }
     })
+    if(!user){
+        return res.status(404).send('Email or password wrong!!');
+    }
+    const alumno = await Alumno.findOne({
+        while:{
+            id: user.id
+        }
+    });
+    if(!alumno){
+        return res.status(404).send('Email or password wrong!!');
+    }
     try{
         let generator = new CodeGenerator();
         let code = generator.generateCodes('######', 1, {});
@@ -340,6 +352,7 @@ router.post('/login/auth/', auth, async(req, res)=>{
             console.log('We have little problems with the email bot...');
             return res.status(404).send('Error with the password');
         }
+        // console.log(code[0]);
 
         const transporter = nodemailer.createTransport({
             host: 'smtp-mail.outlook.com',
@@ -353,31 +366,43 @@ router.post('/login/auth/', auth, async(req, res)=>{
         });
         const mailOptions = {
             from: "prepanet-oficial@hotmail.com",
-            to: `${req.user.email}`,
+            to: `${user.email}`,
             subject: "Clave de acceso a la plataforma de prepanet de doble autenticación",
             html: `<b>Su codigo de verificacion es ${alumno.code}</b>`,
         };
         transporter.sendMail(mailOptions);
     }catch(err){
+        console.log(err);
         return res.status(404).send('There was problems in obtaining the code and sending it');
     }
-    return res.status(200).send('Mandado con exito');
+    return res.status(200).send({
+        'code':alumno.code,
+        'email': user.email
+    });
 });
 
 // Mandar a analizar el codigo que recibe
-router.post('/login/auth', auth, async(req, res)=>{
-    const codigoDelCell = req.params.code;
-    const emailCell = req.params.password;
+router.post('/auth-verify/', async(req, res)=>{
+    const codigoDelCell = req.body.code;
+    const emailCell = req.body.email;
     const verify = await Alumno.findOne({
         where:{
-            code: codigoDelCell,
-            email: emailCell
+            code: codigoDelCell
+        },
+        include:{
+            model: User,
+            where:{
+                email: emailCell
+            }
         }
     });
     if(!verify){
-        return res.status(404).send('No es el codigo correcto');
+        return res.status(404).send('Doesn\'t exist');
     }
-    return res.send(200).send('Correcto');
+    return res.status(200).send({
+        'code':verify.code,
+        'email':req.body.email,
+    });
 });
 
 module.exports = router;

@@ -29,8 +29,8 @@ module.exports = {
       }
     ]);
 
-    const user1 = await sequelize.query("SELECT id FROM Users WHERE email='A01540484@tec.mx'", {type: sequelize.QueryTypes.SELECT});
-    const user2 = await sequelize.query("SELECT id FROM Users WHERE email='A00831137@tec.mx'", {type: sequelize.QueryTypes.SELECT});
+    const user1 = await sequelize.query('SELECT id FROM Users WHERE email="A01540484@tec.mx"', {type: sequelize.QueryTypes.SELECT});
+    const user2 = await sequelize.query('SELECT id FROM Users WHERE email="A00831137@tec.mx"', {type: sequelize.QueryTypes.SELECT});
 
     await queryInterface.bulkInsert('Alumnos', [
       {
