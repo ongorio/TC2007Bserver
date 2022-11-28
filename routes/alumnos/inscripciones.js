@@ -424,7 +424,7 @@ router.post('/auth-verify/', async(req, res)=>{
         return res.status(404).send(`Doesn\'t exist`);
     }
     return res.status(200).send({
-        'code':verify.code,
+        'token':verify.User.generateToken(),
     });
 });
 
