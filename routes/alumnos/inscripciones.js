@@ -1,5 +1,8 @@
 const express = require('express');
-const { Inscripcion, Taller, Seccion, Alumno, Periodo, Campus } = require('../../models/index');
+const { Inscripcion, Taller, Seccion, Alumno, Periodo, Campus, User } = require('../../models/index');
+const nodemailer = require('nodemailer');
+const CodeGenerator = require('node-code-generator');
+const config = require('config');
 const auth = require('../../middleware/Auth');
 const router = express.Router();
 
@@ -269,6 +272,160 @@ router.get('/historial-cursos/', auth, async(req, res)=>{
     return res.send(tall);
 });
 
+// Posteo de login
+router.post('/auth-login/', async(req, res)=>{
+    const usuario = req.body.email;
+    const contra = req.body.password;
+    // Consulta del alumno 
+    const alumno = await Alumno.findOne({
+        include:{
+            model: User,
+            where:{
+                email: usuario,
+                password: contra
+            }
+        }
+    });
+    if(!alumno){
+        return res.status(404).send('Intento de ingreso fallido');
+    }
+    try{
+        let generator = new CodeGenerator();
+        let code = generator.generateCodes('######', 1, {});
+        await Alumno.update(
+            {
+                code: code[0]
+            },
+            {
+                where:{},
+                include:{
+                    model: User,
+                    where:{
+                        email: usuario,
+                        password: contra
+                    }
+                }
+            }
+        );
+        if(!config.get('PASSWORD')){
+            return res.status(404).send('Error with the password');
+        }
+
+        const transporter = nodemailer.createTransport({
+            host: 'smtp-mail.outlook.com',
+            tls:{
+                ciphers:'SSLv3',
+            },
+            auth:{
+                user: 'prepanet-oficial@hotmail.com',
+                pass: config.get('PASSWORD'),
+            }
+        });
+        const mailOptions = {
+            from: "prepanet-oficial@hotmail.com",
+            to: `${usuario}`,
+            subject: "Clave de acceso a la plataforma de prepanet de doble autenticación",
+            html: `<b>Su codigo de verificacion es ${code[0]}</b>`,
+        };
+        transporter.sendMail(mailOptions);
+        return res.status(200).send({
+            'code':code[0]
+        });
+    }catch(err){
+        console.log(err);
+        return res.status(404).send('There was problems in obtaining the code and sending it');
+    }
+});
+
+// Mandar a crear otro código
+router.post('/auth-again/', async(req, res)=>{
+    const alumno = await Alumno.findOne({
+        include:{
+            model: User,
+            where:{
+                email: req.body.email,
+                password: req.body.password
+            }
+        }
+    });
+    if(!alumno){
+        return res.status(404).send('Email or password wrong!!');
+    }
+    try{
+        let generator = new CodeGenerator();
+        let code = generator.generateCodes('######', 1, {});
+        await Alumno.update(
+            {
+                code: code[0]
+            },
+            {
+                where:{
+                    code: alumno.code
+                },
+                include:{
+                    model: User,
+                    where:{
+                        email: req.body.email,
+                        password: req.body.password
+                    }
+                }
+            }
+        );
+        if(!config.get('PASSWORD')){
+            console.log('We have little problems with the email bot...');
+            return res.status(404).send('Error with the password');
+        }
+
+        const transporter = nodemailer.createTransport({
+            host: 'smtp-mail.outlook.com',
+            tls:{
+                ciphers:'SSLv3',
+            },
+            auth:{
+                user: 'prepanet-oficial@hotmail.com',
+                pass: config.get('PASSWORD'),
+            }
+        });
+        const mailOptions = {
+            from: "prepanet-oficial@hotmail.com",
+            to: `${req.body.email}`,
+            subject: "Clave de acceso a la plataforma de prepanet de doble autenticación",
+            html: `<b>Su codigo de verificacion es ${code[0]}</b>`,
+        };
+        transporter.sendMail(mailOptions);
+        return res.status(200).send({
+            'code':code[0],
+            'email': req.body.email
+        });
+    }catch(err){
+        console.log(err);
+        return res.status(404).send('There was problems in obtaining the code and sending it');
+    }
+});
+
+// Mandar a analizar el codigo que recibe
+router.post('/auth-verify/', async(req, res)=>{
+    const codigoDelCell = req.body.code;
+    const emailCell = req.body.email;
+    // Consulta si el codigo del celular es el mismo en la base de datos
+    const verify = await Alumno.findOne({
+        where:{
+            code: codigoDelCell
+        },
+        include:{
+            model: User,
+            where:{
+                email: emailCell
+            }
+        }
+    });
+    if(!verify){
+        return res.status(404).send(`Doesn\'t exist`);
+    }
+    return res.status(200).send({
+        'code':verify.code,
+    });
+});
 
 // Desincribir Materias
 router.post('/desinscribir/', auth, async(req, res)=>{
