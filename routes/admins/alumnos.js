@@ -1,40 +1,28 @@
 const express = require('express');
 const router = express.Router();
 
-
-const { Alumno, Seccion, Inscripcion, Taller, User, Campus } = require('../../models/index');
+const { User, Alumno, Taller, Seccion, Campus, Inscripcion } = require('../../models/index');
 const auth = require('../../middleware/Auth');
 
 
 router.get('/alumnos/', auth, async(req, res)=>{
-    
-    const coordi = await req.user.getCoordinador({include: Campus});
-    const campus = await coordi.Campus;
 
-    // console.log(req.user)
-    // console.log(campus);
+    const alumnos = await Alumno.findAll({
+        include: [{
+            model: User,
+            attributes: [
+                'id', 'first_name', 'last_name'
+            ]
+        },
+        {
+            model: Campus,
+            attributes: [
+                'id', 'name'
+            ]
+}]
+});
 
-    // try{
-
-        let alumnos = await Alumno.findAll({
-            where:{
-                'campusId': campus.id
-            },
-            include: [{
-                model: User,
-                attributes: [
-                    'id', 'first_name', 'last_name'
-                ]
-            },
-            {
-                model: Campus,
-                attributes: [
-                    'id', 'name'
-                ]
-    }]
-    });
-    
-    let alumnos2Send = [];
+let alumnos2Send = [];
     
     for (let alumno of alumnos){
         let temp = {}
@@ -71,16 +59,11 @@ router.get('/alumnos/', auth, async(req, res)=>{
 
     }
     res.send(alumnos2Send)
-    // }catch(e){
-    //     console.log(e);
-    //     res.send('Error oops')
-    // }
-        
 
 });
 
 
-router.get('/alumno/:id', async(req, res)=>{
+router.get('/alumno/:id', auth, async(req, res)=>{
     const alumno = await Alumno.findByPk(req.params.id, {
         include:[
             {
@@ -155,6 +138,7 @@ router.get('/alumno/:id', async(req, res)=>{
     return res.send(alumnos2Send);
 
 })
+
 
 
 module.exports = router;

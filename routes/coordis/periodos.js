@@ -5,6 +5,10 @@ const auth = require('../../middleware/Auth');
 
 router.get('/periods/', auth, async(req, res)=>{
 
+    const periods = await Periodo.findAll();
+
+    return res.send(periods);
+
 });
 
 

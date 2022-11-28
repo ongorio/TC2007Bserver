@@ -143,7 +143,6 @@ router.post('/inscribir/:id/', auth, async(req, res)=>{
 });
 
 
-
 // Obtener curso a inscribir
 router.get('/curso-inscribir/', auth, async(req, res)=>{
     const alumno = await req.user.getAlumno();
@@ -269,6 +268,42 @@ router.get('/historial-cursos/', auth, async(req, res)=>{
 
     return res.send(tall);
 });
+
+
+// Desincribir Materias
+router.post('/desinscribir/', auth, async(req, res)=>{
+    const alumno = await req.user.getAlumno({include: Campus});
+    const periodo = await Periodo.findOne({ where: { isActive: true }});
+
+
+    if (!periodo) return res.status(404).send("No hay periodo activo!");
+
+
+    const insc = await Inscripcion.findOne({
+        where: {
+            alumnoId: alumno.id,
+            periodoId: periodo.id
+        },
+        include: {
+            model: Seccion
+        }
+    });
+
+    if (!insc) return res.status(400).send('No tienes materias inscritas!');
+
+    try{
+        await Inscripcion.destroy({
+            where: {
+                id: insc.id
+            }
+        })
+        res.send('Exito')
+    }catch(e){
+        res.status(400).send('No se pudo eliminar');
+    }
+});
+
+
 
 
 module.exports = router;
