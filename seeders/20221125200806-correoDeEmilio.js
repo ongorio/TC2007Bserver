@@ -1,5 +1,4 @@
 'use strict';
-
 const bcrypt = require('bcrypt');
 const { sequelize } = require('../models');
 /** @type {import('sequelize-cli').Migration} */

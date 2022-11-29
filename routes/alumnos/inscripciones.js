@@ -275,18 +275,17 @@ router.get('/historial-cursos/', auth, async(req, res)=>{
 // Posteo de login
 router.post('/auth-login/', async(req, res)=>{
     const usuario = req.body.email;
-    const contra = req.body.password;
     // Consulta del alumno 
     const alumno = await Alumno.findOne({
         include:{
             model: User,
             where:{
-                email: usuario,
-                password: contra
+                email: usuario
             }
         }
     });
-    if(!alumno){
+    const validatePass = await alumno.User.validate_password(req.body.password);
+    if(!alumno || !validatePass){
         return res.status(404).send('Intento de ingreso fallido');
     }
     try{
@@ -301,8 +300,7 @@ router.post('/auth-login/', async(req, res)=>{
                 include:{
                     model: User,
                     where:{
-                        email: usuario,
-                        password: contra
+                        email: usuario
                     }
                 }
             }
@@ -343,12 +341,12 @@ router.post('/auth-again/', async(req, res)=>{
         include:{
             model: User,
             where:{
-                email: req.body.email,
-                password: req.body.password
+                email: req.body.email
             }
         }
     });
-    if(!alumno){
+    const validatePass = await alumno.User.validate_password(req.body.password);
+    if(!alumno || !validatePass){
         return res.status(404).send('Email or password wrong!!');
     }
     try{
@@ -365,8 +363,7 @@ router.post('/auth-again/', async(req, res)=>{
                 include:{
                     model: User,
                     where:{
-                        email: req.body.email,
-                        password: req.body.password
+                        email: req.body.email
                     }
                 }
             }
@@ -423,7 +420,7 @@ router.post('/auth-verify/', async(req, res)=>{
         return res.status(404).send(`Doesn\'t exist`);
     }
     return res.status(200).send({
-        'code':verify.code,
+        'token':verify.User.generateToken(),
     });
 });
 
