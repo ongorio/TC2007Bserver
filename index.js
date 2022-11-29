@@ -3,14 +3,14 @@ const express = require('express');
 // Define App object
 const app = express();
 
+// Check Config File
+require('./startup/checkConfig')();
+
 // Add Global Middleware
 require('./startup/addMiddleware')(app);
 
 // Add Routes
 require('./startup/addRoutes')(app);
-
-// Check Config File
-require('./startup/checkConfig')();
 
 // Revise Server
 const port = process.env.PORT || 3000;
