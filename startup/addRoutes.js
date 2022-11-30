@@ -1,23 +1,23 @@
 // Admin Routers
-const alumnosAdmin = require('./routes/admins/alumnos');
-const reporteAdmin = require('./routes/admins/report');
-const periodosAdmin = require('./routes/admins/periodos');
+const alumnosAdmin = require('../routes/admins/alumnos');
+const reporteAdmin = require('../routes/admins/report');
+const periodosAdmin = require('../routes/admins/periodos');
 
 // Coords Routers
-const alumnosCoords = require('./routes/coordis/alumnos');
-const periodosCoords = require('./routes/coordis/periodos');
-const reportCoords = require('./routes/coordis/report');
+const alumnosCoords = require('../routes/coordis/alumnos');
+const periodosCoords = require('../routes/coordis/periodos');
+const reportCoords = require('../routes/coordis/report');
 
 // Alumnos Routers
-const inscripcionesAlumnos = require('./routes/alumnos/inscripciones');
-const tallerAlumnos = require('./routes/alumnos/taller');
-const profileAlumnos = require('./routes/alumnos/profile');
+const inscripcionesAlumnos = require('../routes/alumnos/inscripciones');
+const tallerAlumnos = require('../routes/alumnos/taller');
+const profileAlumnos = require('../routes/alumnos/profile');
 
 // General Users Routers
-const users = require('./routes/users');
+const users = require('../routes/users');
 
 // Dummy Routers
-const dummy = require('./routes/dummy');
+const dummy = require('../routes/dummy');
 
 
 module.exports = app =>{
@@ -63,5 +63,4 @@ module.exports = app =>{
         `)
     });
     
-
 };
