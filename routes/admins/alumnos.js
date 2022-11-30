@@ -1,3 +1,10 @@
+/*
+    Admin Routes
+    Alumnos
+
+*/
+
+
 const express = require('express');
 const router = express.Router();
 
@@ -6,8 +13,10 @@ const auth = require('../../middleware/Auth');
 const { hasPerm } = require('../../middleware/Auth');
 
 
+// Gets all alumnos registered
 router.get('/alumnos/', [auth, hasPerm('isAdmin')], async(req, res)=>{
 
+    // Get alumnos with user and campus
     const alumnos = await Alumno.findAll({
         include: [{
             model: User,
@@ -20,12 +29,15 @@ router.get('/alumnos/', [auth, hasPerm('isAdmin')], async(req, res)=>{
             attributes: [
                 'id', 'name'
             ]
-}]
-});
+        }]
+    });
 
-let alumnos2Send = [];
+    // List to contain sent objects
+    let alumnos2Send = [];
     
     for (let alumno of alumnos){
+
+        // Temp object to hold final sent object
         let temp = {}
         temp.id = alumno.id;
         temp.first_name =  alumno.User.first_name;
@@ -92,8 +104,6 @@ router.get('/alumno/:id', [auth, hasPerm('isAdmin')], async(req, res)=>{
         }
     });
 
-
-    // console.log(talleres);
 
     let talleres2Send = [];
     for (let taller of talleres){

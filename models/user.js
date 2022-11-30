@@ -16,11 +16,15 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
+    // Validates password against user hash
+    // returns bool
     async validate_password(password){
       const result = await bcrypt.compare(password, this.getDataValue("password"));
       return result;
     }
 
+    // Generates token with the user id encoded
+    // returns str
     generateToken(){
       const token = jwt.sign({_id: this.getDataValue('id')}, config.get('SECRET_KEY'));
       return token;

@@ -1,4 +1,11 @@
 'use strict';
+
+/*
+  This file creates the following tables on the database
+  - Periodos
+*/
+
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {

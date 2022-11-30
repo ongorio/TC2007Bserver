@@ -2,6 +2,7 @@
 const alumnosAdmin = require('../routes/admins/alumnos');
 const reporteAdmin = require('../routes/admins/report');
 const periodosAdmin = require('../routes/admins/periodos');
+const coordisAdmin = require('../routes/admins/coordis');
 
 // Coords Routers
 const alumnosCoords = require('../routes/coordis/alumnos');
@@ -30,6 +31,7 @@ module.exports = app =>{
     app.use('/api/admin/', reporteAdmin);
     app.use('/api/admin/', alumnosAdmin);
     app.use('/api/admin/', periodosAdmin);
+    app.use('/api/admin/', coordisAdmin);
 
 
     // Coords Routes

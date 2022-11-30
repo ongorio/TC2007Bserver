@@ -1,5 +1,14 @@
 'use strict';
 
+/*
+  This file creates the following tables on the database
+  - Users
+  - Campuses
+  - Alumnos
+  - Coordinadors
+*/
+
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
