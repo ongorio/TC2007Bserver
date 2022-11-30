@@ -3,8 +3,9 @@ const router = express.Router();
 
 const { Inscripcion, Alumno, User, Periodo, Seccion, Taller } = require('../../models/index');
 const auth = require('../../middleware/Auth');
+const { hasPerm } = require('../../middleware/Auth');
 
-router.get('/reporte/', auth, async(req, res)=>{
+router.get('/reporte/', [auth, hasPerm('isCoord')], async(req, res)=>{
 
     const user = req.user;
     const coordi = await user.getCoordinador()

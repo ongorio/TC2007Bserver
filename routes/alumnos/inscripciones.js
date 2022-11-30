@@ -4,12 +4,14 @@ const nodemailer = require('nodemailer');
 const CodeGenerator = require('node-code-generator');
 const config = require('config');
 const auth = require('../../middleware/Auth');
+const { hasPerm } = require('../../middleware/Auth');
+
 const router = express.Router();
 
 
 
 // Inscripcion Alumno
-router.post('/inscribir/:id/', auth, async(req, res)=>{
+router.post('/inscribir/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
 
     const taller = await Taller.findByPk(req.params.id);
     const alumno = await req.user.getAlumno({include: Campus});
@@ -147,7 +149,7 @@ router.post('/inscribir/:id/', auth, async(req, res)=>{
 
 
 // Obtener curso a inscribir
-router.get('/curso-inscribir/', auth, async(req, res)=>{
+router.get('/curso-inscribir/', [auth, hasPerm('isAlumno')], async(req, res)=>{
     const alumno = await req.user.getAlumno();
 
     let talleres = await Taller.findAll({
@@ -218,9 +220,8 @@ router.get('/curso-inscribir/', auth, async(req, res)=>{
 });
 
 
-
 // Historial de los cursos
-router.get('/historial-cursos/', auth, async(req, res)=>{
+router.get('/historial-cursos/', [auth, hasPerm('isAlumno')], async(req, res)=>{
     const alumno = await req.user.getAlumno();
     // let periodo = await Periodo.findOne({ where: { isActive: true }});
 
@@ -425,7 +426,7 @@ router.post('/auth-verify/', async(req, res)=>{
 });
 
 // Desincribir Materias
-router.post('/desinscribir/', auth, async(req, res)=>{
+router.post('/desinscribir/', [auth, hasPerm('isAlumno')], auth, async(req, res)=>{
     const alumno = await req.user.getAlumno({include: Campus});
     const periodo = await Periodo.findOne({ where: { isActive: true }});
 

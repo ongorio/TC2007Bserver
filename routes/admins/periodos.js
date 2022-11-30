@@ -3,6 +3,7 @@ const router = express.Router();
 const Joi = require('joi');
 
 const auth = require('../../middleware/Auth');
+const { hasPerm } = require('../../middleware/Auth');
 
 const { Periodo, Seccion, Taller } = require('../../models/index');
 
@@ -11,7 +12,7 @@ const periodSchema = Joi.object({
     nombre: Joi.string().required()
 })
 
-router.post('/add-period/', async(req, res)=>{
+router.post('/add-period/', [auth, hasPerm('isAdmin')], async(req, res)=>{
 
     const { error } = periodSchema.validate(req.body);
     if (error) return res.status(400).send(error.message);
@@ -22,12 +23,11 @@ router.post('/add-period/', async(req, res)=>{
         isActive: false
     });
 
-    return res.send(period)
-
+    return res.send(period);
 });
 
 
-router.get('/periods/', async(req, res)=>{
+router.get('/periods/', [auth, hasPerm('isAdmin')], async(req, res)=>{
 
     const periodos = await Periodo.findAll();
 
@@ -35,7 +35,7 @@ router.get('/periods/', async(req, res)=>{
 });
 
 
-router.get('/current-period/', async(req, res)=>{
+router.get('/current-period/', [auth, hasPerm('isAdmin')], async(req, res)=>{
     
     const activePeriod = await Periodo.findOne({
         attributes: [
@@ -52,7 +52,7 @@ router.get('/current-period/', async(req, res)=>{
 });
 
 
-router.get('/period-seccions/:id/', async(req,res)=>{
+router.get('/period-seccions/:id/', [auth, hasPerm('isAdmin')], async(req,res)=>{
 
     const periodo = await Periodo.findByPk(req.params.id);
     if (!periodo) return res.status(404).send(periodo);
@@ -79,7 +79,7 @@ router.get('/period-seccions/:id/', async(req,res)=>{
         ]
     });
 
-    return res.send(secciones)
+    return res.send(secciones);
 
 });
 

@@ -3,8 +3,9 @@ const router = express.Router();
 
 const { Inscripcion, Alumno, User, Periodo, Seccion, Taller, Campus } = require('../../models/index');
 const auth = require('../../middleware/Auth');
+const { hasPerm } = require('../../middleware/Auth');
 
-router.get('/reporte/', auth, async(req, res)=>{
+router.get('/reporte/', [auth, hasPerm('isAdmin')], async(req, res)=>{
 
     const inscripciones = await Inscripcion.findAll({
         include: [{
@@ -35,7 +36,7 @@ router.get('/reporte/', auth, async(req, res)=>{
     let insc2Send = [];
     for (let inscripcion of inscripciones){
 
-        const campus = inscripcion.Alumno.Campus
+        const campus = inscripcion.Alumno.Campus;
 
 
         let temp = {
@@ -49,11 +50,9 @@ router.get('/reporte/', auth, async(req, res)=>{
             approved: inscripcion.aprobado,
             estatus: inscripcion.estatus,
             taller: inscripcion.Seccion.Taller.dataValues['nombre']
-        }
+        };
         insc2Send.push(temp);
-
     }
-
 
     res.send(insc2Send);
 });

@@ -3,9 +3,10 @@ const router = express.Router();
 
 const { User, Alumno, Taller, Seccion, Campus, Inscripcion } = require('../../models/index');
 const auth = require('../../middleware/Auth');
+const { hasPerm } = require('../../middleware/Auth');
 
 
-router.get('/alumnos/', auth, async(req, res)=>{
+router.get('/alumnos/', [auth, hasPerm('isAdmin')], async(req, res)=>{
 
     const alumnos = await Alumno.findAll({
         include: [{
@@ -63,7 +64,7 @@ let alumnos2Send = [];
 });
 
 
-router.get('/alumno/:id', auth, async(req, res)=>{
+router.get('/alumno/:id', [auth, hasPerm('isAdmin')], async(req, res)=>{
     const alumno = await Alumno.findByPk(req.params.id, {
         include:[
             {
@@ -98,13 +99,13 @@ router.get('/alumno/:id', auth, async(req, res)=>{
     for (let taller of talleres){
         
         let temp = {};
-        temp.id = taller.id
-        temp.nombre = taller.nombre
-        temp.orden = taller.orden
-        temp.description = taller.description
-        temp.duracion = taller.duracion
+        temp.id = taller.id;
+        temp.nombre = taller.nombre;
+        temp.orden = taller.orden;
+        temp.description = taller.description;
+        temp.duracion = taller.duracion;
         temp.approved = false;
-        temp.estatus = 'Sin Cursar'
+        temp.estatus = 'Sin Cursar';
 
         if (taller.Seccions){
             for (let secc of taller.Seccions){
@@ -113,7 +114,7 @@ router.get('/alumno/:id', auth, async(req, res)=>{
                         if (insc.aprobado){
                             temp.approved = true;
                         }
-                        temp.estatus = insc.estatus
+                        temp.estatus = insc.estatus;
                     }
                 }
             }
@@ -137,7 +138,7 @@ router.get('/alumno/:id', auth, async(req, res)=>{
 
     return res.send(alumnos2Send);
 
-})
+});
 
 
 

@@ -1,12 +1,12 @@
 const express = require('express');
 const { Taller, Seccion, Inscripcion } = require('../../models/index');
 const auth = require('../../middleware/Auth');
+const { hasPerm } = require('../../middleware/Auth');
 
 const router = express.Router();
 
-
 // Get taller a detalle
-router.get('/taller/:id/', auth, async(req, res)=>{
+router.get('/taller/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
     const alumno = await req.user.getAlumno();
 
     const taller = await Taller.findByPk(req.params.id, {

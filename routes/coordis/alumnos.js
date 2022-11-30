@@ -4,33 +4,29 @@ const router = express.Router();
 
 const { Alumno, Seccion, Inscripcion, Taller, User, Campus } = require('../../models/index');
 const auth = require('../../middleware/Auth');
+const { hasPerm } = require('../../middleware/Auth');
 
 
-router.get('/alumnos/', auth, async(req, res)=>{
+router.get('/alumnos/', [auth, hasPerm('isCoord')], async(req, res)=>{
     
     const coordi = await req.user.getCoordinador({include: Campus});
     const campus = await coordi.Campus;
 
-    // console.log(req.user)
-    // console.log(campus);
-
-    // try{
-
-        let alumnos = await Alumno.findAll({
-            where:{
-                'campusId': campus.id
-            },
-            include: [{
-                model: User,
-                attributes: [
-                    'id', 'first_name', 'last_name'
-                ]
-            },
-            {
-                model: Campus,
-                attributes: [
-                    'id', 'name'
-                ]
+    let alumnos = await Alumno.findAll({
+        where:{
+            'campusId': campus.id
+        },
+        include: [{
+            model: User,
+            attributes: [
+                'id', 'first_name', 'last_name'
+            ]
+        },
+        {
+            model: Campus,
+            attributes: [
+                'id', 'name'
+            ]
     }]
     });
     
@@ -71,16 +67,10 @@ router.get('/alumnos/', auth, async(req, res)=>{
 
     }
     res.send(alumnos2Send)
-    // }catch(e){
-    //     console.log(e);
-    //     res.send('Error oops')
-    // }
-        
-
 });
 
 
-router.get('/alumno/:id', async(req, res)=>{
+router.get('/alumno/:id', [auth, hasPerm('isCoord')], async(req, res)=>{
     const alumno = await Alumno.findByPk(req.params.id, {
         include:[
             {

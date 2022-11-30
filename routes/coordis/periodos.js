@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { Campus, Seccion, Alumno, Periodo, Coordinador, Taller } = require('../../models/index');
 const auth = require('../../middleware/Auth');
+const { hasPerm } = require('../../middleware/Auth');
 
-router.get('/periods/', auth, async(req, res)=>{
+router.get('/periods/', [auth, hasPerm('isCoord')], async(req, res)=>{
 
     const periods = await Periodo.findAll();
 
@@ -12,7 +13,7 @@ router.get('/periods/', auth, async(req, res)=>{
 });
 
 
-router.get('/current-period/', auth, async(req, res)=>{
+router.get('/current-period/', [auth, hasPerm('isCoord')], async(req, res)=>{
 
 
     try {
@@ -32,8 +33,7 @@ router.get('/current-period/', auth, async(req, res)=>{
 });
 
 
-
-router.get('/period-seccions/:id/', auth, async(req, res)=>{
+router.get('/period-seccions/:id/', [auth, hasPerm('isCoord')], async(req, res)=>{
     const period = await Periodo.findByPk(req.params.id);
 
     if (!period) return res.status(404).send('No period Found!');

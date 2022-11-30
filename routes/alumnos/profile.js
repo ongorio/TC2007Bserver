@@ -3,8 +3,9 @@ const router = express.Router();
 const { Campus, User } = require('../../models/index');
 
 const auth = require('../../middleware/Auth');
+const { hasPerm } = require('../../middleware/Auth');
 
-router.get('/profile/', auth, async(req, res)=>{
+router.get('/profile/', [auth, hasPerm('isAlumno')], async(req, res)=>{
     const alumno = await req.user.getAlumno({ include: {
         model: Campus,
         attributes: ['id', 'name']
@@ -23,13 +24,5 @@ router.get('/profile/', auth, async(req, res)=>{
     res.send(object2Send);
 });
 
-// Get de la clave
-// router.get('/profile/', auth, async(req, res)=>{
-//     const code = auth.send_code(req, res);
-//     if(!code){
-//         return res.status(404).send(`${code}`);
-//     }
-//     return res.status(400).send({code: code});
-// })
 
 module.exports = router;
