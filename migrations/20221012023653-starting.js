@@ -15,7 +15,6 @@ module.exports = {
   const transaction = await queryInterface.sequelize.transaction();
 
   try{
-
     await queryInterface.createTable('Users', {
       id: {
         allowNull: false,

@@ -24,14 +24,13 @@ router.post('/inscribir/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
 
     let insc = await Inscripcion.findOne({
         where: {
+            '$Seccion.tallerId$': taller.id,
             alumnoId: alumno.id,
             periodoId: periodo.id 
         },
         include: {
             model: Seccion,
-            where:{
-                tallerId: taller.id
-            }
+            as: 'Seccion',
         }
     });
 
@@ -40,20 +39,52 @@ router.post('/inscribir/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
     }
 
 
+    insc = await Inscripcion.findOne({
+        where: {
+            alumnoId: alumno.id,
+            periodoId: periodo.id 
+        },
+        include: {
+            model: Seccion,
+            as: 'Seccion',
+        }
+    });
+
+    if (insc){
+        return res.status(400).send('Ya inscribiste una materia este periodo!')
+    }
+
+
+
+    insc = await Inscripcion.findOne({
+        where: {
+            aprobado:true,
+            alumnoId: alumno.id,
+            '$Seccion.tallerId$': taller.id,
+        },
+        include: {
+            model: Seccion,
+            as: 'Seccion',
+        }
+    });
+
+    if (insc){
+        return res.status(400).send('Ya acreditaste esta materia!')
+    }
+
     // Check dependencies
     if (taller.orden > 1){
         const preTaller = await Taller.findOne({where: {orden: taller.orden-1}});
         
         
         insc = await Inscripcion.findOne({
+            where:{
+                aprobado:true,
+                '$Seccion.tallerId$': preTaller.id
+            }, 
             include: [{
                 model: Seccion,
-                include: {
-                    model: Taller,
-                    where: {
-                    id: preTaller.id
-                }
-            }
+                as: 'Seccion'
             },
             {
                 model: Alumno,
@@ -62,9 +93,8 @@ router.post('/inscribir/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
                 }
             }]
         });
-
-        if (!insc || !insc.aprobado){
-            return res.status(400).send('No tiene las dependencias!');
+        if (!insc){
+            return res.status(400).send('No tienes las dependencias!');
         }
     }
 
@@ -79,7 +109,6 @@ router.post('/inscribir/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
         }
     });
 
-    // console.log(alumno.Campus.id)
     if (!seccion){
         let {count, rows} = await Seccion.findAndCountAll(
             {
@@ -114,6 +143,7 @@ router.post('/inscribir/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
                 isOpen: true,
                 secNum: seccNum
             })
+            // console.log(taller.id);
 
             await seccion.setTaller(taller);
             await seccion.setPeriodo(periodo);
@@ -126,19 +156,22 @@ router.post('/inscribir/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
 
     }
     
-
+    
     try{
+        // console.log(taller.id)
 
         let nuevaInsc = await Inscripcion.create({
             estatus: 'Cursando',
             aprobado: false,
         });
+        nuevaInsc.calificacion = 0;
         
         nuevaInsc.setAlumno(alumno);
         nuevaInsc.setSeccion(seccion);
         nuevaInsc.setPeriodo(periodo);
 
         return res.send(nuevaInsc);
+        // res
     }catch(e){
         console.log(e)
         res.status(400).send(e);
@@ -152,6 +185,7 @@ router.post('/inscribir/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
 router.get('/curso-inscribir/', [auth, hasPerm('isAlumno')], async(req, res)=>{
     const alumno = await req.user.getAlumno();
 
+    // console.log(alumno)
     let talleres = await Taller.findAll({
         attributes: ['id', 'nombre', 'orden', 'description', 'duracion']
     });
@@ -160,20 +194,19 @@ router.get('/curso-inscribir/', [auth, hasPerm('isAlumno')], async(req, res)=>{
     for (let taller of talleres){
 
         let insc;
-        console.log(taller.orden);
+        // console.log(taller.orden);
         if (taller.orden > 1){
             const preTaller = await Taller.findOne({where: {orden: taller.orden-1}});
             
             
             insc = await Inscripcion.findOne({
+                where: {
+                    aprobado: true,
+                    '$Seccion.tallerId$': preTaller.id
+                },
                 include: [{
                     model: Seccion,
-                    include: {
-                        model: Taller,
-                        where: {
-                        id: preTaller.id
-                    }
-                }
+                    as: 'Seccion'
                 },
                 {
                     model: Alumno,
@@ -182,22 +215,33 @@ router.get('/curso-inscribir/', [auth, hasPerm('isAlumno')], async(req, res)=>{
                     }
                 }]
             });
+
+
+            let insc2 = await Inscripcion.findOne({
+                where: {
+                    aprobado:true,
+                    alumnoId: alumno.id,
+                    '$Seccion.tallerId$': taller.id,
+                },
+                include: {
+                    model: Seccion,
+                    as: 'Seccion',
+                }
+            });
     
-            if (insc && insc.aprobado){
+            if (insc && !insc2){
                 return res.send(taller);
             }
         }else{
 
-
             insc = await Inscripcion.findOne({
+                where: {
+                    '$Seccion.tallerId$':taller.id,
+                    aprobado: true
+                },
                 include: [{
                     model: Seccion,
-                    include: {
-                        model: Taller,
-                        where: {
-                        id: taller.id
-                    }
-                }
+                    as: 'Seccion',
                 },
                 {
                     model: Alumno,
@@ -207,11 +251,10 @@ router.get('/curso-inscribir/', [auth, hasPerm('isAlumno')], async(req, res)=>{
                 }]
             });
 
-            // console.log(insc)
-
-            if (!insc || !insc.aprobado){
+            if (!insc){
                 return res.send(taller)
             }
+
 
         }
         
@@ -224,7 +267,7 @@ router.get('/curso-inscribir/', [auth, hasPerm('isAlumno')], async(req, res)=>{
 router.get('/historial-cursos/', [auth, hasPerm('isAlumno')], async(req, res)=>{
     const alumno = await req.user.getAlumno();
     // let periodo = await Periodo.findOne({ where: { isActive: true }});
-
+    // console.log(alumno);
 
     let talleres = await Taller.findAll({
         attributes: ['id', 'nombre', 'orden', 'description', 'duracion'],
@@ -250,9 +293,9 @@ router.get('/historial-cursos/', [auth, hasPerm('isAlumno')], async(req, res)=>{
         temp.duracion = taller.duracion
         temp.approved = false
         temp.estatus = 'Sin Cursar'
+        // console.log(taller)
 
-
-        if (taller.Seccions){
+        if (taller.Seccions.length > 0){
             for (let seccion of taller.Seccions){
                 if (seccion.Inscripcions){
                     for (let insc of seccion.Inscripcions){
