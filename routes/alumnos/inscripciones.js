@@ -163,8 +163,8 @@ router.post('/inscribir/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
         let nuevaInsc = await Inscripcion.create({
             estatus: 'Cursando',
             aprobado: false,
+            calificacion: 0
         });
-        nuevaInsc.calificacion = 0;
         
         nuevaInsc.setAlumno(alumno);
         nuevaInsc.setSeccion(seccion);
