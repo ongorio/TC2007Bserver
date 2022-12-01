@@ -32,7 +32,6 @@ router.get('/reporte/', [auth, hasPerm('isAdmin')], async(req, res)=>{
     ]
     });
 
-
     let insc2Send = [];
     for (let inscripcion of inscripciones){
 

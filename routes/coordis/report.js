@@ -81,9 +81,9 @@ router.get('/home/', [auth, hasPerm('isCoord')], async(req, res)=>{
 router.get('/reporte/', [auth, hasPerm('isCoord')], async(req, res)=>{
 
     const user = req.user;
-    const coordi = await user.getCoordinador()
-    const campus = await coordi.getCampus();
-    // console.log(campus);
+    const coordi = await user.getCoordinador({ include: Campus })
+    const campus = coordi.Campus;
+    console.log(campus);
 
     const inscripciones = await Inscripcion.findAll({
         where: {

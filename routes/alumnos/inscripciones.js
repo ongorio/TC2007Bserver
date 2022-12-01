@@ -100,7 +100,11 @@ router.post('/inscribir/:id/', [auth, hasPerm('isAlumno')], async(req, res)=>{
 
 
     let seccion = await Seccion.findOne({
-        where: { isOpen: true },
+        where: {
+            isOpen: true, 
+            tallerId: taller.id,
+            campusId: alumno.Campus.id
+        },
         include: {
             model: Periodo,
             where: {
